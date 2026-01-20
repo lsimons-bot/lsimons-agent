@@ -16,12 +16,13 @@ Core principle: Keep it simple. When the agent does something wrong, improve the
 
 ### Invocation
 ```bash
-uv run lsimons-agent [--web]
+uv run lsimons-agent      # CLI only
+uv run lsimons-agent-web  # Web server on localhost:8765
 ```
 
 ### Behavior
-- No arguments: Start interactive REPL mode
-- `--web`: Also start web server on localhost:8765
+- `lsimons-agent`: Start interactive REPL mode
+- `lsimons-agent-web`: Start web server with chat UI
 
 ### REPL Commands
 - Type message + Enter: Send to agent
@@ -219,10 +220,10 @@ Returns standard OpenAI chat completion format:
 
 ### State Tracking
 
-The mock server tracks conversation state to return multi-step responses:
+The mock server determines the current step by counting tool result messages:
 - Each scenario has multiple `steps`
-- Server tracks which step each conversation is on (by session or message count)
-- Sequential calls return the next step in the scenario
+- Step index = count of `role: "tool"` messages in conversation
+- No server-side state needed - purely based on message history
 
 ---
 
@@ -398,6 +399,9 @@ Serves the main chat page (index.html template).
 
 #### POST /chat
 Send a message and receive streamed response.
+
+#### POST /clear
+Reset conversation history. Returns `{"status": "ok"}`.
 
 Request:
 ```json

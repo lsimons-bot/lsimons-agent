@@ -207,5 +207,10 @@ Optional longer description if needed.
 
 ## Documentation
 
-* [Implementation Plan](docs/IMPLEMENTATION_PLAN.md) - Phased build approach
 * [Specifications](docs/SPECS.md) - Detailed feature specs for CLI, tools, web, and electron
+
+## Future Ideas
+
+- Conversation persistence
+- Syntax highlighting
+- Token usage display
