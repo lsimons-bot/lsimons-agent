@@ -11,9 +11,15 @@ const PROJECT_ROOT = path.join(__dirname, '..', '..');
 
 function checkServer(url) {
     return new Promise((resolve) => {
-        http.get(url, (res) => {
-            resolve(res.statusCode === 200);
-        }).on('error', () => {
+        const req = http.get(url, (res) => {
+            // Any response means server is running
+            resolve(true);
+        });
+        req.on('error', () => {
+            resolve(false);
+        });
+        req.setTimeout(2000, () => {
+            req.destroy();
             resolve(false);
         });
     });
@@ -57,15 +63,17 @@ async function startServer() {
                 if (ready) {
                     resolve();
                 } else if (serverProcess === null) {
-                    // Server process exited - check if another server is running
-                    checkServer(SERVER_URL).then((otherServerReady) => {
-                        if (otherServerReady) {
-                            console.log('Using existing server');
-                            resolve();
-                        } else {
-                            reject(new Error('Server failed to start'));
-                        }
-                    });
+                    // Server process exited - wait a moment then check if another server is running
+                    setTimeout(() => {
+                        checkServer(SERVER_URL).then((otherServerReady) => {
+                            if (otherServerReady) {
+                                console.log('Using existing server');
+                                resolve();
+                            } else {
+                                reject(new Error('Server failed to start'));
+                            }
+                        });
+                    }, 500);
                 } else if (Date.now() - startTime > timeout) {
                     reject(new Error('Server start timeout'));
                 } else {
@@ -74,7 +82,8 @@ async function startServer() {
             });
         }
 
-        check();
+        // Small delay before first check to let server start
+        setTimeout(check, 100);
     });
 }
 
