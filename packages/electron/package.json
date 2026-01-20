@@ -1,0 +1,14 @@
+{
+  "name": "lsimons-agent-electron",
+  "version": "0.1.0",
+  "description": "Desktop app for lsimons-agent",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.0.0"
+  }
+}
