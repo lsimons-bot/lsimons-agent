@@ -75,6 +75,7 @@ function createWindow() {
         width: 900,
         height: 700,
         title: 'lsimons-agent',
+        show: true,
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: true
@@ -82,6 +83,8 @@ function createWindow() {
     });
 
     mainWindow.loadURL(SERVER_URL);
+    mainWindow.show();
+    mainWindow.focus();
 
     mainWindow.on('closed', () => {
         mainWindow = null;
@@ -100,6 +103,13 @@ app.whenReady().then(async () => {
 
 app.on('window-all-closed', () => {
     app.quit();
+});
+
+// macOS: re-create window when dock icon is clicked
+app.on('activate', () => {
+    if (mainWindow === null) {
+        createWindow();
+    }
 });
 
 app.on('quit', () => {
