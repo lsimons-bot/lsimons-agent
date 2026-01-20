@@ -53,6 +53,12 @@ lsimons-agent/
 │   │           ├── server.py       # FastAPI app
 │   │           ├── routes.py       # API routes
 │   │           └── templates/      # Jinja2 + HTMX templates
+│   ├── mock-llm/          # Mock LLM server for testing
+│   │   ├── pyproject.toml
+│   │   ├── scenarios.json # Canned responses
+│   │   └── src/
+│   │       └── mock_llm/
+│   │           └── server.py
 │   └── electron/          # Electron wrapper
 │       ├── package.json
 │       └── main.js
@@ -75,6 +81,9 @@ uv run lsimons-agent
 
 # Run the web server
 uv run lsimons-agent-web
+
+# Run mock LLM server (for testing)
+uv run mock-llm-server
 
 # Run tests
 uv run pytest
@@ -107,6 +116,49 @@ LLM_SMALL_FAST_MODEL=azure/gpt-5-mini
 3. **No abstractions until needed** - Start concrete, abstract later if patterns emerge
 4. **Synchronous by default** - Async adds complexity, avoid unless necessary
 5. **Fail fast** - Simple error handling, let exceptions propagate
+
+## Linting
+
+Use ruff for linting and formatting:
+
+```bash
+uv run ruff check .          # Check for errors
+uv run ruff check . --fix    # Auto-fix errors
+uv run ruff format .         # Format code
+```
+
+Run linting before committing. All code must pass `ruff check` with no errors.
+
+## Testing
+
+```bash
+uv run pytest                # Run all tests
+uv run pytest tests/test_tools.py  # Run one file
+uv run pytest -k "test_read"       # Run tests matching name
+```
+
+Rules:
+- Write tests for new functions
+- Tests go in `tests/` directory
+- Name test files `test_*.py`
+- Name test functions `test_*`
+- No mocking - use real implementations or the mock LLM server
+- Keep tests simple: setup, action, assert
+
+## Git Workflow
+
+1. Work on `main` branch (no feature branches for this project)
+2. Make small, focused commits
+3. Run `uv run ruff check .` before committing
+4. Run `uv run pytest` before committing
+5. Write clear commit messages: what changed and why
+
+Commit message format:
+```
+Short summary (50 chars or less)
+
+Optional longer description if needed.
+```
 
 ## Documentation
 

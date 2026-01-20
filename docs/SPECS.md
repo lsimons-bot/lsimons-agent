@@ -109,6 +109,123 @@ def chat(messages, tools=None, model=None):
 
 ---
 
+## Mock LLM Server
+
+Test server that returns canned responses. Used for development and testing without real LLM costs.
+
+### Invocation
+```bash
+uv run mock-llm-server [--port 8000]
+```
+
+### Endpoint
+
+#### POST /chat/completions
+
+Matches incoming messages against scenarios and returns canned response.
+
+Matching logic:
+1. Extract last user message content
+2. Find scenario where `trigger` is substring of user message
+3. Return corresponding `response`
+4. If no match, return default "I don't understand" response
+
+### Scenarios File
+
+`packages/mock-llm/scenarios.json`:
+```json
+{
+  "scenarios": [
+    {
+      "name": "hello-world",
+      "trigger": "hello world",
+      "steps": [
+        {
+          "response": {
+            "content": "I'll create a hello world Python script for you.",
+            "tool_calls": [
+              {
+                "id": "call_001",
+                "type": "function",
+                "function": {
+                  "name": "write_file",
+                  "arguments": "{\"path\": \"hello.py\", \"content\": \"print('Hello, World!')\"}"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "response": {
+            "content": "I've created hello.py. Let me run it to verify it works.",
+            "tool_calls": [
+              {
+                "id": "call_002",
+                "type": "function",
+                "function": {
+                  "name": "bash",
+                  "arguments": "{\"command\": \"python hello.py\"}"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "response": {
+            "content": "Done! The script works correctly and outputs 'Hello, World!'"
+          }
+        }
+      ]
+    },
+    {
+      "name": "simple-chat",
+      "trigger": "how are you",
+      "steps": [
+        {
+          "response": {
+            "content": "I'm doing well, thank you for asking!"
+          }
+        }
+      ]
+    }
+  ],
+  "default_response": {
+    "content": "I'm a mock server. I only understand specific test scenarios."
+  }
+}
+```
+
+### Response Format
+
+Returns standard OpenAI chat completion format:
+```json
+{
+  "id": "mock-12345",
+  "object": "chat.completion",
+  "model": "mock-model",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "...",
+        "tool_calls": [...]
+      },
+      "finish_reason": "stop"
+    }
+  ]
+}
+```
+
+### State Tracking
+
+The mock server tracks conversation state to return multi-step responses:
+- Each scenario has multiple `steps`
+- Server tracks which step each conversation is on (by session or message count)
+- Sequential calls return the next step in the scenario
+
+---
+
 ## Tools
 
 Four tools only: read, write, edit, bash.

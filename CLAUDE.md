@@ -12,9 +12,17 @@ A custom CLI coding agent for @lsimons and @lsimons-bot. Hello-world style imple
 uv sync                    # Install dependencies
 uv run lsimons-agent       # Run CLI
 uv run lsimons-agent-web   # Run web server
+uv run mock-llm-server     # Run mock LLM for testing
+uv run ruff check .        # Lint code
+uv run ruff format .       # Format code
 uv run pytest              # Run all tests
-uv run pytest tests/test_foo.py::test_bar  # Run single test
 ```
+
+## Before Committing
+
+1. Run `uv run ruff check .` - fix any errors
+2. Run `uv run pytest` - all tests must pass
+3. Write a clear commit message (what + why)
 
 ## Architecture
 
