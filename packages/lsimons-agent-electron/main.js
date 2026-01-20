@@ -6,13 +6,12 @@ const path = require('path');
 let serverProcess = null;
 let mainWindow = null;
 
-const SERVER_URL = 'http://localhost:8765';
+const SERVER_URL = 'http://127.0.0.1:8765';
 const PROJECT_ROOT = path.join(__dirname, '..', '..');
 
 function checkServer(url) {
     return new Promise((resolve) => {
-        const req = http.get(url, (res) => {
-            // Any response means server is running
+        const req = http.get(url, () => {
             resolve(true);
         });
         req.on('error', () => {
