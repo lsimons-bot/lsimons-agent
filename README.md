@@ -30,3 +30,77 @@ Things I don't want or need:
 * Image support
 * Themes (just dark mode is fine)
 * Configurability (just load some env vars, hardcode the rest in python)
+
+## Project Structure
+
+```
+lsimons-agent/
+├── packages/
+│   ├── core/              # Core agent logic (python)
+│   │   ├── pyproject.toml
+│   │   └── src/
+│   │       └── lsimons_agent/
+│   │           ├── __init__.py
+│   │           ├── cli.py          # CLI entry point
+│   │           ├── agent.py        # Main agent loop
+│   │           ├── tools.py        # Tool definitions (file read/write, bash, etc)
+│   │           └── anthropic.py    # Anthropic API client wrapper
+│   ├── web/               # FastAPI backend + HTMX frontend
+│   │   ├── pyproject.toml
+│   │   └── src/
+│   │       └── lsimons_agent_web/
+│   │           ├── __init__.py
+│   │           ├── server.py       # FastAPI app
+│   │           ├── routes.py       # API routes
+│   │           └── templates/      # Jinja2 + HTMX templates
+│   └── electron/          # Electron wrapper
+│       ├── package.json
+│       └── main.js
+├── tests/                 # Simple unit tests
+├── pyproject.toml         # Root project config (uv workspace)
+└── README.md
+```
+
+## Development Setup
+
+```bash
+# Install uv if not already installed
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Create virtual environment and install dependencies
+uv sync
+
+# Run the CLI
+uv run lsimons-agent
+
+# Run the web server
+uv run lsimons-agent-web
+
+# Run tests
+uv run pytest
+```
+
+## Environment Variables
+
+Get these from 1password and set them:
+
+```bash
+ANTHROPIC_API_KEY=sk-ant-...
+```
+
+## Tech Stack
+
+* **Python 3.12+** - Main language
+* **uv** - Package management and virtual environments
+* **FastAPI** - Web framework for the API
+* **Jinja2 + HTMX** - Server-side rendering with dynamic updates
+* **Electron** - Desktop app wrapper
+* **pytest** - Testing (no mocking frameworks)
+
+## Design Principles
+
+1. **Readable code over clever code** - Favor explicit, simple implementations
+2. **Minimal dependencies** - Only add what's truly needed
+3. **No abstractions until needed** - Start concrete, abstract later if patterns emerge
+4. **Synchronous by default** - Async adds complexity, avoid unless necessary
+5. **Fail fast** - Simple error handling, let exceptions propagate
