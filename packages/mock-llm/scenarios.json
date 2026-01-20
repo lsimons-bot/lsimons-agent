@@ -1,0 +1,59 @@
+{
+  "scenarios": [
+    {
+      "name": "hello-world",
+      "trigger": "hello world",
+      "steps": [
+        {
+          "response": {
+            "content": "I'll create a hello world Python script for you.",
+            "tool_calls": [
+              {
+                "id": "call_001",
+                "type": "function",
+                "function": {
+                  "name": "write_file",
+                  "arguments": "{\"path\": \"hello.py\", \"content\": \"print('Hello, World!')\"}"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "response": {
+            "content": "I've created hello.py. Let me run it to verify it works.",
+            "tool_calls": [
+              {
+                "id": "call_002",
+                "type": "function",
+                "function": {
+                  "name": "bash",
+                  "arguments": "{\"command\": \"python hello.py\"}"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "response": {
+            "content": "Done! The script works correctly and outputs 'Hello, World!'"
+          }
+        }
+      ]
+    },
+    {
+      "name": "simple-chat",
+      "trigger": "how are you",
+      "steps": [
+        {
+          "response": {
+            "content": "I'm doing well, thank you for asking!"
+          }
+        }
+      ]
+    }
+  ],
+  "default_response": {
+    "content": "I'm a mock server. I only understand specific test scenarios."
+  }
+}
