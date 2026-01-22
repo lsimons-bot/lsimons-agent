@@ -2,13 +2,13 @@
 
 ## Reminder
 
-Format the thread about running the coding agent inside a VM on Mac inside ATM into a markdown file for project documentation.
+Format the Slack thread about running the coding agent inside a VM on Mac inside UTM into a markdown file for project documentation.
 
 ## Source
 
-- Platform: (Slack? Twitter? Other?)
+- Platform: Slack
 - Author: @lsimons
-- Topic: Running coding agent in VM on Mac inside ATM
+- Topic: Running coding agent in VM on Mac inside UTM
 
 ## Tasks
 
