@@ -1,4 +1,6 @@
-This will be a custom CLI coding agent for use by Leo Simons (@lsimons) and his bot (@lsimons-bot).
+This is a demo CLI coding agent for use by Leo Simons (@lsimons) and his bot (@lsimons-bot).
+
+![](docs/lsimons-agent-screenshot.png)
 
 It's inspired by stuff like
 * https://ampcode.com/how-to-build-an-agent
@@ -13,7 +15,7 @@ Things I want:
 * Implemented in python and using uv.
 * Low on external dependencies to keep complexity down.
 * Keep the python code simple and don't use advanced coding constructs.
-* The CLI should also launch a simple webserver on localhost with a web UI. That should use FastAPI and HTMX. The frontend should be UX.
+* The CLI should also launch a simple webserver on localhost with a web UI.
 * Electron application that is a thin wrapper around that web frontend.
 * Use vibe coding to build the coding agent.
 * Experiment with the Ralph Wiggum style of vibe coding to build this, https://awesomeclaude.ai/ralph-wiggum .
@@ -84,6 +86,15 @@ uv run mock-llm-server
 # Run Python tests
 uv run pytest
 ```
+
+## GUI
+Simple electron app that wraps the web UI:
+```bash
+# Run the Electron app
+cd lsimons-agent-electron && npm install && npm start
+```
+
+![](docs/lsimons-agent-electron-screenshot.png)
 
 ## Playwright E2E Tests
 
