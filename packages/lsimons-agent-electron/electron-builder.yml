@@ -10,12 +10,11 @@ publish:
   owner: lsimons
   repo: lsimons-agent
 
-# Include PyInstaller-built backend
-extraFiles:
+# Include PyInstaller-built backend (single executable)
+# extraResources puts files in Contents/Resources/ (accessible via process.resourcesPath)
+extraResources:
   - from: "../lsimons-agent-web/dist/lsimons-agent-web"
-    to: "backend"
-    filter:
-      - "**/*"
+    to: "backend/lsimons-agent-web"
 
 mac:
   category: public.app-category.developer-tools
