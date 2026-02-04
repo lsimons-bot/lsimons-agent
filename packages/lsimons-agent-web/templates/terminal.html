@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>lsimons-agent</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/css/xterm.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body {
+            height: 100%;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0f0f1a 100%);
+            overflow: hidden;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            padding: 12px;
+            gap: 12px;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 8px 16px;
+            background: linear-gradient(90deg, rgba(0,212,255,0.1) 0%, rgba(138,43,226,0.1) 100%);
+            border: 1px solid rgba(0,212,255,0.3);
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0,212,255,0.1), inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            border: 2px solid rgba(0,212,255,0.5);
+            box-shadow: 0 0 10px rgba(0,212,255,0.3);
+        }
+        .title-section {
+            flex: 1;
+        }
+        .title {
+            font-size: 1.5em;
+            font-weight: bold;
+            background: linear-gradient(90deg, #00d4ff, #8a2be2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(0,212,255,0.5);
+        }
+        .subtitle {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 2px;
+        }
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #0f0;
+            font-size: 0.85em;
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #0f0;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #0f0;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .terminals {
+            flex: 1;
+            display: flex;
+            gap: 12px;
+            min-height: 0;
+        }
+        .terminal-pane {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: rgba(10,10,15,0.9);
+            border: 1px solid rgba(0,212,255,0.2);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5), inset 0 0 30px rgba(0,0,0,0.3);
+        }
+        .terminal-pane.agent {
+            border-color: rgba(0,212,255,0.3);
+        }
+        .terminal-pane.shell {
+            border-color: rgba(138,43,226,0.3);
+        }
+        .pane-header {
+            padding: 8px 12px;
+            font-size: 0.85em;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .terminal-pane.agent .pane-header {
+            background: linear-gradient(90deg, rgba(0,212,255,0.15) 0%, transparent 100%);
+            color: #00d4ff;
+        }
+        .terminal-pane.shell .pane-header {
+            background: linear-gradient(90deg, rgba(138,43,226,0.15) 0%, transparent 100%);
+            color: #8a2be2;
+        }
+        .pane-icon {
+            font-size: 1.1em;
+        }
+        .terminal-content {
+            flex: 1;
+            padding: 8px;
+            min-height: 0;
+        }
+        .terminal-content .xterm {
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <img src="/logo.png" alt="Logo" class="logo">
+        <div class="title-section">
+            <div class="title">lsimons-agent</div>
+            <div class="subtitle">AI-powered coding assistant</div>
+        </div>
+        <div class="status">
+            <div class="status-dot"></div>
+            <span>Connected</span>
+        </div>
+    </div>
+    <div class="terminals">
+        <div class="terminal-pane agent">
+            <div class="pane-header">
+                <span class="pane-icon">&#x1F916;</span>
+                <span>Agent</span>
+            </div>
+            <div class="terminal-content" id="terminal-agent"></div>
+        </div>
+        <div class="terminal-pane shell">
+            <div class="pane-header">
+                <span class="pane-icon">&#x1F4BB;</span>
+                <span>Shell</span>
+            </div>
+            <div class="terminal-content" id="terminal-shell"></div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/lib/xterm.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@xterm/addon-fit@0.10.0/lib/addon-fit.js"></script>
+<script>
+function createTerminal(elementId, wsPath, accentColor) {
+    const term = new Terminal({
+        cursorBlink: true,
+        theme: {
+            background: '#0a0a0f',
+            foreground: '#e0e0e0',
+            cursor: accentColor,
+            cursorAccent: '#0a0a0f',
+            selectionBackground: '#444',
+            black: '#000000',
+            red: '#ff5555',
+            green: '#50fa7b',
+            yellow: '#f1fa8c',
+            blue: '#6272a4',
+            magenta: '#ff79c6',
+            cyan: '#8be9fd',
+            white: '#f8f8f2',
+            brightBlack: '#6272a4',
+            brightRed: '#ff6e6e',
+            brightGreen: '#69ff94',
+            brightYellow: '#ffffa5',
+            brightBlue: '#d6acff',
+            brightMagenta: '#ff92df',
+            brightCyan: '#a4ffff',
+            brightWhite: '#ffffff'
+        },
+        fontFamily: "'Monaco', 'Menlo', 'Ubuntu Mono', monospace",
+        fontSize: 13
+    });
+
+    const fitAddon = new FitAddon.FitAddon();
+    term.loadAddon(fitAddon);
+    term.open(document.getElementById(elementId));
+    fitAddon.fit();
+
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const ws = new WebSocket(protocol + '//' + window.location.host + wsPath);
+    ws.binaryType = 'arraybuffer';
+
+    const statusDot = document.querySelector('.status-dot');
+    const statusText = document.querySelector('.status span');
+
+    ws.onopen = function() {
+        sendResize();
+    };
+
+    ws.onmessage = function(event) {
+        if (event.data instanceof ArrayBuffer) {
+            term.write(new Uint8Array(event.data));
+        } else {
+            term.write(event.data);
+        }
+    };
+
+    ws.onclose = function() {
+        term.write('\r\n\x1b[31m[Connection closed]\x1b[0m\r\n');
+        statusDot.style.background = '#f00';
+        statusDot.style.boxShadow = '0 0 10px #f00';
+        statusText.textContent = 'Disconnected';
+        statusText.style.color = '#f00';
+    };
+
+    ws.onerror = function() {
+        term.write('\r\n\x1b[31m[Connection error]\x1b[0m\r\n');
+    };
+
+    term.onData(function(data) {
+        if (ws.readyState === WebSocket.OPEN) {
+            ws.send(new TextEncoder().encode(data));
+        }
+    });
+
+    function sendResize() {
+        if (ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify({
+                type: 'resize',
+                rows: term.rows,
+                cols: term.cols
+            }));
+        }
+    }
+
+    term.onResize(function() {
+        sendResize();
+    });
+
+    window.addEventListener('resize', function() {
+        fitAddon.fit();
+    });
+
+    return { term, fitAddon, ws };
+}
+
+// Create both terminals
+const agentTerminal = createTerminal('terminal-agent', '/ws/terminal/agent', '#00d4ff');
+const shellTerminal = createTerminal('terminal-shell', '/ws/terminal/shell', '#8a2be2');
+</script>
+</body>
+</html>

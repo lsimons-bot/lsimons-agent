@@ -14,11 +14,20 @@ def test_templates_has_index():
     assert (TEMPLATES_DIR / "index.html").exists()
 
 
+def test_templates_has_terminal():
+    assert (TEMPLATES_DIR / "terminal.html").exists()
+
+
 def test_app_has_routes():
     routes = [route.path for route in app.routes]
     assert "/" in routes
     assert "/chat" in routes
     assert "/clear" in routes
+    assert "/terminal" in routes
+    assert "/ws/terminal/agent" in routes
+    assert "/ws/terminal/shell" in routes
+    assert "/terminal/stop" in routes
+    assert "/logo.png" in routes
 
 
 def test_event_stream_formats_text_event():
