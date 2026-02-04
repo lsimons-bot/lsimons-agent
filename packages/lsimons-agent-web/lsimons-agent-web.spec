@@ -48,6 +48,7 @@ a = Analysis(
         "lsimons_agent.tools",
         "lsimons_agent_web",
         "lsimons_agent_web.server",
+        "lsimons_agent_web.terminal",
         # httpx
         "httpx",
         "httpcore",

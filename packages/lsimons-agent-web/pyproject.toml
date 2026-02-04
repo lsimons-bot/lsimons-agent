@@ -3,13 +3,14 @@ name = "lsimons-agent-web"
 version = "0.1.0"
 description = "Web interface for lsimons-agent"
 requires-python = ">=3.12"
-dependencies = ["lsimons-agent", "fastapi", "uvicorn"]
+dependencies = ["lsimons-agent", "fastapi", "uvicorn", "websockets"]
 
 [tool.uv.sources]
 lsimons-agent = { workspace = true }
 
 [project.scripts]
 lsimons-agent-web = "lsimons_agent_web.server:main"
+lsimons-agent-client = "lsimons_agent_web.client:run"
 
 [build-system]
 requires = ["hatchling"]
