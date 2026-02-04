@@ -1,6 +1,7 @@
 """PTY terminal management for browser-based terminal."""
 
 import fcntl
+import glob
 import os
 import pty
 import select
@@ -56,6 +57,24 @@ class Terminal:
             env["LC_TERMINAL"] = "lsimons-agent"
             # Remove ZDOTDIR so zsh uses $HOME for .zshrc
             env.pop("ZDOTDIR", None)
+
+            # Ensure PATH includes common bin directories (app bundles have minimal PATH)
+            home = os.path.expanduser("~")
+            extra_paths = [
+                f"{home}/git/lsimons/lsimons-agent/.venv/bin",
+                f"{home}/.local/bin",
+                f"{home}/.cargo/bin",
+                "/opt/homebrew/bin",
+                "/opt/homebrew/sbin",
+                "/usr/local/bin",
+                "/usr/local/sbin",
+            ]
+            # Add NVM node bin directories (glob for any installed version)
+            nvm_paths = glob.glob(f"{home}/.local/share/nvm/versions/node/*/bin")
+            nvm_paths += glob.glob(f"{home}/.nvm/versions/node/*/bin")
+            extra_paths.extend(sorted(nvm_paths, reverse=True))  # Prefer newer versions
+            current_path = env.get("PATH", "/usr/bin:/bin")
+            env["PATH"] = ":".join(extra_paths) + ":" + current_path
 
             # Exec shell or command
             if self.command:

@@ -2,7 +2,6 @@
 
 import asyncio
 import json
-import os
 import subprocess
 import sys
 from pathlib import Path
@@ -11,7 +10,7 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse, HTMLResponse, StreamingResponse
 from lsimons_agent.agent import new_conversation, process_message
 
-from .terminal import Terminal
+from lsimons_agent_web.terminal import Terminal
 
 app = FastAPI()
 
@@ -30,6 +29,7 @@ AGENT_COMMANDS = {
 
 # Git base directory
 GIT_BASE_DIR = Path.home() / "git"
+DEFAULT_PROJECT = GIT_BASE_DIR / "lsimons" / "lsimons-agent"
 
 
 def get_resource_path(relative_path: str) -> Path:
@@ -183,15 +183,15 @@ async def _handle_terminal_websocket(
 
 
 def get_project_path(project: str | None) -> str:
-    """Get the full path for a project, or cwd if None."""
+    """Get the full path for a project, or default if None."""
     if not project:
-        return os.getcwd()
+        return str(DEFAULT_PROJECT)
 
     # Project format: "org/repo"
     if "/" in project:
         return str(GIT_BASE_DIR / project)
 
-    return os.getcwd()
+    return str(DEFAULT_PROJECT)
 
 
 @app.websocket("/ws/terminal/agent")
