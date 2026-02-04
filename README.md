@@ -47,8 +47,11 @@ lsimons-agent/
 │   ├── lsimons-agent-web/       # FastAPI backend + HTML frontend
 │   │   ├── pyproject.toml
 │   │   ├── src/lsimons_agent_web/
-│   │   │   └── server.py        # FastAPI app (uses core agent)
-│   │   └── templates/           # HTML templates
+│   │   │   ├── server.py        # FastAPI app with WebSocket terminals
+│   │   │   ├── terminal.py      # PTY-based terminal management
+│   │   │   └── client.py        # CLI client for chat endpoint
+│   │   ├── templates/           # HTML templates (terminal UI)
+│   │   └── static/              # Static assets (favicon, logo)
 │   ├── mock-llm-server/         # Mock LLM server for testing
 │   │   ├── pyproject.toml
 │   │   ├── scenarios.json       # Canned responses
@@ -61,6 +64,9 @@ lsimons-agent/
 │       ├── package.json
 │       ├── playwright.config.js
 │       └── tests/
+├── scripts/                     # Build scripts
+│   ├── build_backend.py         # PyInstaller build for backend
+│   └── build_icons.py           # Generate app icons
 ├── pyproject.toml               # Root project config (uv workspace)
 └── README.md
 ```
@@ -88,13 +94,36 @@ uv run pytest
 ```
 
 ## GUI
-Simple electron app that wraps the web UI:
+
+### Development Mode
+Run the Electron app in development (launches web server automatically):
 ```bash
-# Run the Electron app
-cd lsimons-agent-electron && npm install && npm start
+cd packages/lsimons-agent-electron && npm install && npm start
 ```
 
 ![](docs/lsimons-agent-electron-screenshot.png)
+
+### Building for Distribution
+Build standalone desktop apps that bundle the Python backend:
+
+```bash
+cd packages/lsimons-agent-electron
+
+# Build for current platform
+npm run build
+
+# Build for specific platform
+npm run build:mac      # macOS (.dmg)
+npm run build:win      # Windows (.exe)
+npm run build:linux    # Linux (.AppImage)
+```
+
+The build process:
+1. Generates app icons from `docs/Leo-Bot.png`
+2. Bundles Python backend with PyInstaller
+3. Packages everything with electron-builder
+
+Built apps are in `packages/lsimons-agent-electron/dist/`.
 
 ## Playwright E2E Tests
 
