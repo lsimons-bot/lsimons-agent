@@ -89,9 +89,7 @@ class Terminal:
             self._running = True
 
             # Start reader thread
-            self._reader_thread = threading.Thread(
-                target=self._read_loop, daemon=True
-            )
+            self._reader_thread = threading.Thread(target=self._read_loop, daemon=True)
             self._reader_thread.start()
 
     def _read_loop(self) -> None:

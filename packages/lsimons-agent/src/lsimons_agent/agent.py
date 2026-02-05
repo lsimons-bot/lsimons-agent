@@ -54,11 +54,13 @@ def process_message(messages: list[dict], user_message: str):
             except Exception as e:
                 result = f"Error: {e}"
 
-            messages.append({
-                "role": "tool",
-                "tool_call_id": tool_call["id"],
-                "content": result,
-            })
+            messages.append(
+                {
+                    "role": "tool",
+                    "tool_call_id": tool_call["id"],
+                    "content": result,
+                }
+            )
 
     yield ("done", None)
 

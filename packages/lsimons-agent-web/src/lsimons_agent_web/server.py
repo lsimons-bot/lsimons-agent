@@ -135,9 +135,7 @@ def sync_repos():
     return scan_git_repos()
 
 
-async def _handle_terminal_websocket(
-    websocket: WebSocket, terminal: Terminal
-) -> None:
+async def _handle_terminal_websocket(websocket: WebSocket, terminal: Terminal) -> None:
     """Handle WebSocket I/O for a terminal."""
     try:
         while True:
@@ -158,9 +156,7 @@ async def _handle_terminal_websocket(
 
             # Check for websocket input (with timeout)
             try:
-                message = await asyncio.wait_for(
-                    websocket.receive(), timeout=0.05
-                )
+                message = await asyncio.wait_for(websocket.receive(), timeout=0.05)
                 if message.get("type") == "websocket.disconnect":
                     break
                 if "bytes" in message:
@@ -230,9 +226,7 @@ async def terminal_agent_websocket(
 
 
 @app.websocket("/ws/terminal/shell")
-async def terminal_shell_websocket(
-    websocket: WebSocket, project: str | None = None
-):
+async def terminal_shell_websocket(websocket: WebSocket, project: str | None = None):
     """WebSocket endpoint for shell terminal."""
     global terminals
 

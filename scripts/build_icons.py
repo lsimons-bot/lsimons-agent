@@ -74,7 +74,7 @@ def generate_icns_with_pillow(img):
         resized.save(iconset / f"icon_{size}x{size}.png")
         # Retina (@2x) - half the stated size at double density
         if size >= 32 and size <= 512:
-            resized.save(iconset / f"icon_{size//2}x{size//2}@2x.png")
+            resized.save(iconset / f"icon_{size // 2}x{size // 2}@2x.png")
 
     # Use iconutil to create .icns
     subprocess.run(
@@ -116,7 +116,7 @@ def generate_mac_icons_native():
                     str(size),
                     str(SOURCE),
                     "--out",
-                    str(iconset / f"icon_{size//2}x{size//2}@2x.png"),
+                    str(iconset / f"icon_{size // 2}x{size // 2}@2x.png"),
                 ],
                 check=True,
                 capture_output=True,

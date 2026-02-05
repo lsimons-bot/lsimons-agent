@@ -11,9 +11,7 @@ TOOLS = [
             "description": "Read the contents of a file",
             "parameters": {
                 "type": "object",
-                "properties": {
-                    "path": {"type": "string", "description": "File path to read"}
-                },
+                "properties": {"path": {"type": "string", "description": "File path to read"}},
                 "required": ["path"],
             },
         },
@@ -59,9 +57,7 @@ TOOLS = [
             "description": "Execute a shell command",
             "parameters": {
                 "type": "object",
-                "properties": {
-                    "command": {"type": "string", "description": "Command to execute"}
-                },
+                "properties": {"command": {"type": "string", "description": "Command to execute"}},
                 "required": ["command"],
             },
         },
