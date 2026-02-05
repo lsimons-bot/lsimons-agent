@@ -162,14 +162,15 @@ Playwright → Electron → Web Server → Core Agent → Mock LLM
 
 ## Environment Variables
 
-Get `LLM_AUTH_TOKEN` from 1password:
+This project uses [lsimons-llm](https://github.com/lsimons-bot/lsimons-llm) for LLM client functionality. Get `LLM_API_KEY` from 1password:
 
 ```bash
-LLM_AUTH_TOKEN=sk-...          # From 1password
-LLM_BASE_URL=https://litellm.sbp.ai
-LLM_DEFAULT_MODEL=azure/gpt-5-1
-LLM_SMALL_FAST_MODEL=azure/gpt-5-mini
+LLM_API_KEY=sk-...             # From 1password
+LLM_BASE_URL=https://litellm.sbp.ai/v1
+LLM_MODEL=azure/gpt-5-1
 ```
+
+See the [lsimons-llm README](https://github.com/lsimons-bot/lsimons-llm#configuration) for full environment variable documentation.
 
 For testing, leave these unset to use defaults (mock server on localhost:8000).
 

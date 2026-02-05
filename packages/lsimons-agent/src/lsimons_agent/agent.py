@@ -1,9 +1,23 @@
 """Agent loop for interactive conversation."""
 
 import json
+import os
+from typing import Any
 
-from lsimons_agent.llm import chat
 from lsimons_agent.tools import TOOLS, bash, execute
+
+# Use lsimons-llm when LLM_API_KEY is set, otherwise use local mock-compatible client
+if os.environ.get("LLM_API_KEY"):
+    from lsimons_llm import LLMClient, load_config
+
+    _config = load_config()
+    _client = LLMClient(_config)
+
+    def chat(messages: list[dict[str, Any]], tools: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+        """Send messages to LLM and return raw API response dict."""
+        return _client.chat_raw(messages, tools)
+else:
+    from lsimons_agent.llm import chat  # noqa: F401
 
 SYSTEM_PROMPT = """\
 You are a coding assistant. You help the user by reading, writing, and editing \
