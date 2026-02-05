@@ -2,8 +2,11 @@
 name = "lsimons-agent"
 version = "0.1.0"
 description = "Custom CLI coding agent"
-requires-python = ">=3.12"
-dependencies = ["httpx"]
+requires-python = ">=3.13"
+dependencies = [
+    "httpx",
+    "lsimons-llm @ git+https://github.com/lsimons-bot/lsimons-llm.git",
+]
 
 [project.scripts]
 lsimons-agent = "lsimons_agent.agent:run"
