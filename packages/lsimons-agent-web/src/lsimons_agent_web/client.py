@@ -42,7 +42,7 @@ def run() -> None:
     while True:
         try:
             user_input = input(f"{BOLD}{GREEN}You:{RESET} ").strip()
-        except (KeyboardInterrupt, EOFError):
+        except KeyboardInterrupt, EOFError:
             print(f"\n{DIM}Bye!{RESET}")
             break
 

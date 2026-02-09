@@ -157,7 +157,7 @@ class Terminal:
             try:
                 os.kill(self.pid, 9)
                 os.waitpid(self.pid, 0)
-            except (OSError, ChildProcessError):
+            except OSError, ChildProcessError:
                 pass
             self.pid = None
 

@@ -103,7 +103,7 @@ def run() -> None:
     while True:
         try:
             user_input = input("You: ").strip()
-        except (KeyboardInterrupt, EOFError):
+        except KeyboardInterrupt, EOFError:
             print("\nBye!")
             break
 

@@ -174,7 +174,7 @@ async def _handle_terminal_websocket(websocket: WebSocket, terminal: Terminal) -
             except TimeoutError:
                 pass
 
-    except (WebSocketDisconnect, RuntimeError):
+    except WebSocketDisconnect, RuntimeError:
         # WebSocket disconnected
         pass
 
