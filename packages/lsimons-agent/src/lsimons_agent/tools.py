@@ -2,8 +2,9 @@
 
 import subprocess
 from pathlib import Path
+from typing import Any
 
-TOOLS = [
+TOOLS: list[dict[str, Any]] = [
     {
         "type": "function",
         "function": {
@@ -109,7 +110,7 @@ def bash(command: str) -> str:
         return "[timed out after 30s]"
 
 
-def execute(name: str, args: dict) -> str:
+def execute(name: str, args: dict[str, str]) -> str:
     """Execute a tool by name and return the result."""
     if name == "read_file":
         return read_file(**args)

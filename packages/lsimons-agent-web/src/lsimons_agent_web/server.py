@@ -5,7 +5,9 @@ import contextlib
 import json
 import subprocess
 import sys
+from collections.abc import Generator
 from pathlib import Path
+from typing import Any
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse, HTMLResponse, StreamingResponse
@@ -20,7 +22,7 @@ app = FastAPI()
 terminals: dict[tuple[str, str, str | None], Terminal] = {}
 
 # Agent command mapping
-AGENT_COMMANDS = {
+AGENT_COMMANDS: dict[str, list[str]] = {
     "lsimons": ["lsimons-agent-client"],
     "claude": ["claude"],
     "pi": ["pi"],
@@ -37,7 +39,7 @@ def get_resource_path(relative_path: str) -> Path:
     """Get path to resource, handling PyInstaller bundled mode."""
     if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
         # Running in PyInstaller bundle
-        return Path(sys._MEIPASS) / relative_path
+        return Path(sys._MEIPASS) / relative_path  # type: ignore[attr-defined]
     # Running in normal Python environment
     return Path(__file__).parent.parent.parent / relative_path
 
@@ -49,7 +51,7 @@ STATIC_DIR = get_resource_path("static")
 messages = new_conversation()
 
 
-def event_stream(user_message: str):
+def event_stream(user_message: str) -> Generator[str]:
     """Generate SSE events for a chat response."""
     for event_type, data in process_message(messages, user_message):
         if event_type == "text":
@@ -71,7 +73,7 @@ def scan_git_repos() -> dict[str, list[str]]:
         if not org_dir.is_dir() or org_dir.name.startswith("."):
             continue
 
-        org_repos = []
+        org_repos: list[str] = []
         for repo_dir in sorted(org_dir.iterdir()):
             if not repo_dir.is_dir() or repo_dir.name.startswith("."):
                 continue
@@ -86,34 +88,34 @@ def scan_git_repos() -> dict[str, list[str]]:
 
 
 @app.get("/", response_class=HTMLResponse)
-def index():
+def index() -> str:
     """Serve the terminal page."""
     return (TEMPLATES_DIR / "terminal.html").read_text()
 
 
 @app.get("/favicon.ico")
-def favicon():
+def favicon() -> FileResponse:
     """Serve the favicon."""
     return FileResponse(STATIC_DIR / "favicon.ico", media_type="image/x-icon")
 
 
 @app.get("/logo.png")
-def logo():
+def logo() -> FileResponse:
     """Serve the logo."""
     return FileResponse(STATIC_DIR / "logo.png", media_type="image/png")
 
 
 @app.post("/chat")
-def chat_endpoint(request: dict):
+def chat_endpoint(request: dict[str, Any]) -> StreamingResponse:
     """Handle chat messages and return SSE stream."""
     return StreamingResponse(
-        event_stream(request.get("message", "")),
+        event_stream(str(request.get("message", ""))),
         media_type="text/event-stream",
     )
 
 
 @app.post("/clear")
-def clear():
+def clear() -> dict[str, str]:
     """Clear conversation history."""
     global messages
     messages = new_conversation()
@@ -121,13 +123,13 @@ def clear():
 
 
 @app.get("/api/repos")
-def list_repos():
+def list_repos() -> dict[str, list[str]]:
     """List available git repositories."""
     return scan_git_repos()
 
 
 @app.post("/api/sync")
-def sync_repos():
+def sync_repos() -> dict[str, list[str]]:
     """Run auto git-sync and return updated repo list."""
     with contextlib.suppress(subprocess.CalledProcessError, FileNotFoundError):
         subprocess.run(["auto", "git-sync"], check=True, capture_output=True)
@@ -163,7 +165,7 @@ async def _handle_terminal_websocket(websocket: WebSocket, terminal: Terminal) -
                 elif "text" in message:
                     # Handle JSON commands (resize)
                     try:
-                        cmd = json.loads(message["text"])
+                        cmd: dict[str, Any] = json.loads(message["text"])
                         if cmd.get("type") == "resize":
                             terminal.resize(cmd["rows"], cmd["cols"])
                     except json.JSONDecodeError:
@@ -192,7 +194,7 @@ def get_project_path(project: str | None) -> str:
 @app.websocket("/ws/terminal/agent")
 async def terminal_agent_websocket(
     websocket: WebSocket, agent: str = "lsimons", project: str | None = None
-):
+) -> None:
     """WebSocket endpoint for agent terminal."""
     global terminals
 
@@ -225,7 +227,7 @@ async def terminal_agent_websocket(
 
 
 @app.websocket("/ws/terminal/shell")
-async def terminal_shell_websocket(websocket: WebSocket, project: str | None = None):
+async def terminal_shell_websocket(websocket: WebSocket, project: str | None = None) -> None:
     """WebSocket endpoint for shell terminal."""
     global terminals
 
@@ -254,7 +256,7 @@ async def terminal_shell_websocket(websocket: WebSocket, project: str | None = N
 
 
 @app.post("/terminal/stop")
-def terminal_stop():
+def terminal_stop() -> dict[str, str]:
     """Stop all terminal sessions."""
     global terminals
     for terminal in terminals.values():
@@ -263,7 +265,7 @@ def terminal_stop():
     return {"status": "ok"}
 
 
-def main():
+def main() -> None:
     """Run the web server."""
     import uvicorn
 

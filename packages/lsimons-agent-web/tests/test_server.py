@@ -1,25 +1,26 @@
 """Tests for web server module."""
 
 import json
+from typing import Any
 
 from lsimons_agent_web.server import TEMPLATES_DIR, app, event_stream
 
 
-def test_templates_dir_exists():
+def test_templates_dir_exists() -> None:
     assert TEMPLATES_DIR.exists()
     assert TEMPLATES_DIR.is_dir()
 
 
-def test_templates_has_index():
+def test_templates_has_index() -> None:
     assert (TEMPLATES_DIR / "index.html").exists()
 
 
-def test_templates_has_terminal():
+def test_templates_has_terminal() -> None:
     assert (TEMPLATES_DIR / "terminal.html").exists()
 
 
-def test_app_has_routes():
-    routes = [route.path for route in app.routes]
+def test_app_has_routes() -> None:
+    routes: list[str] = [getattr(route, "path", "") for route in app.routes]
     assert "/" in routes
     assert "/chat" in routes
     assert "/clear" in routes
@@ -31,9 +32,9 @@ def test_app_has_routes():
     assert "/logo.png" in routes
 
 
-def test_event_stream_formats_text_event():
+def test_event_stream_formats_text_event() -> None:
     # Create a mock generator that yields a text event
-    def mock_process_message(messages, user_message):
+    def mock_process_message(messages: list[dict[str, Any]], user_message: str) -> Any:
         yield ("text", "Hello world")
         yield ("done", None)
 
@@ -61,8 +62,8 @@ def test_event_stream_formats_text_event():
         server_module.process_message = original
 
 
-def test_event_stream_formats_tool_event():
-    def mock_process_message(messages, user_message):
+def test_event_stream_formats_tool_event() -> None:
+    def mock_process_message(messages: list[dict[str, Any]], user_message: str) -> Any:
         yield ("tool", {"name": "read_file", "args": {"path": "foo.txt"}})
         yield ("done", None)
 
