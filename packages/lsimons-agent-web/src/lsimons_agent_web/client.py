@@ -2,6 +2,7 @@
 
 import json
 import sys
+from typing import Any
 
 import httpx
 
@@ -28,7 +29,7 @@ ASCII_ART = f"""{CYAN}{BOLD}
 """
 
 
-def run():
+def run() -> None:
     """Run the CLI client that connects to the web server."""
     base_url = "http://localhost:8765"
 
@@ -72,28 +73,28 @@ def _send_message(base_url: str, message: str) -> None:
     ) as response:
         response.raise_for_status()
 
-        event_type = None
+        event_type: str | None = None
         current_text = ""
 
         for line in response.iter_lines():
             if line.startswith("event: "):
                 event_type = line[7:]
             elif line.startswith("data: "):
-                data = json.loads(line[6:])
+                data: dict[str, Any] = json.loads(line[6:])
                 _handle_event(event_type, data, current_text)
                 if event_type == "text":
                     if not current_text:
-                        current_text = data.get("content", "")
+                        current_text = str(data.get("content", ""))
                     else:
-                        current_text += data.get("content", "")
+                        current_text += str(data.get("content", ""))
                 elif event_type in ("tool", "done"):
                     current_text = ""
 
 
-def _handle_event(event_type: str | None, data: dict, current_text: str) -> None:
+def _handle_event(event_type: str | None, data: dict[str, Any], current_text: str) -> None:
     """Handle a single SSE event."""
     if event_type == "text":
-        content = data.get("content", "")
+        content = str(data.get("content", ""))
         if not current_text:
             # First text chunk - print prefix
             sys.stdout.write(f"\n{BOLD}{CYAN}Agent:{RESET} {content}")
@@ -101,16 +102,16 @@ def _handle_event(event_type: str | None, data: dict, current_text: str) -> None
             sys.stdout.write(content)
         sys.stdout.flush()
     elif event_type == "tool":
-        name = data.get("name", "")
-        args = data.get("args", {})
-        print(f"\n{YELLOW}[Tool: {name}({_format_args(args)})]{RESET}")
+        name = str(data.get("name", ""))
+        args: dict[str, Any] = data.get("args", {})
+        print(f"\n{YELLOW}[Tool: {name}({format_args(args)})]{RESET}")
     elif event_type == "done":
         print("\n")
 
 
-def _format_args(args: dict) -> str:
+def format_args(args: dict[str, Any]) -> str:
     """Format tool arguments for display."""
-    parts = []
+    parts: list[str] = []
     for k, v in args.items():
         if isinstance(v, str) and len(v) > 30:
             v = v[:30] + "..."

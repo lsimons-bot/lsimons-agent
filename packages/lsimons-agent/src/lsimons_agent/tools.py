@@ -2,8 +2,9 @@
 
 import subprocess
 from pathlib import Path
+from typing import Any
 
-TOOLS = [
+TOOLS: list[dict[str, Any]] = [
     {
         "type": "function",
         "function": {
@@ -11,9 +12,7 @@ TOOLS = [
             "description": "Read the contents of a file",
             "parameters": {
                 "type": "object",
-                "properties": {
-                    "path": {"type": "string", "description": "File path to read"}
-                },
+                "properties": {"path": {"type": "string", "description": "File path to read"}},
                 "required": ["path"],
             },
         },
@@ -59,9 +58,7 @@ TOOLS = [
             "description": "Execute a shell command",
             "parameters": {
                 "type": "object",
-                "properties": {
-                    "command": {"type": "string", "description": "Command to execute"}
-                },
+                "properties": {"command": {"type": "string", "description": "Command to execute"}},
                 "required": ["command"],
             },
         },
@@ -113,7 +110,7 @@ def bash(command: str) -> str:
         return "[timed out after 30s]"
 
 
-def execute(name: str, args: dict) -> str:
+def execute(name: str, args: dict[str, str]) -> str:
     """Execute a tool by name and return the result."""
     if name == "read_file":
         return read_file(**args)

@@ -1,6 +1,6 @@
 """Tests for agent module."""
 
-from lsimons_agent.agent import SYSTEM_PROMPT, _format_args, new_conversation
+from lsimons_agent.agent import SYSTEM_PROMPT, format_args, new_conversation
 
 
 def test_new_conversation():
@@ -16,26 +16,26 @@ def test_new_conversation_returns_new_list():
     assert messages1 is not messages2
 
 
-def test_format_args_simple():
-    result = _format_args({"path": "foo.txt"})
+def testformat_args_simple():
+    result = format_args({"path": "foo.txt"})
     assert result == "path='foo.txt'"
 
 
-def test_format_args_multiple():
-    result = _format_args({"path": "foo.txt", "content": "hello"})
+def testformat_args_multiple():
+    result = format_args({"path": "foo.txt", "content": "hello"})
     assert "path='foo.txt'" in result
     assert "content='hello'" in result
 
 
-def test_format_args_truncates_long_strings():
+def testformat_args_truncates_long_strings():
     long_string = "a" * 100
-    result = _format_args({"content": long_string})
+    result = format_args({"content": long_string})
     assert "..." in result
     assert len(result) < 100
 
 
-def test_format_args_empty():
-    result = _format_args({})
+def testformat_args_empty():
+    result = format_args({})
     assert result == ""
 
 

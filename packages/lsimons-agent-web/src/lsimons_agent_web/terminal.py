@@ -1,5 +1,6 @@
 """PTY terminal management for browser-based terminal."""
 
+import contextlib
 import fcntl
 import glob
 import os
@@ -42,10 +43,8 @@ class Terminal:
         if pid == 0:
             # Child process - change to working directory
             if self.cwd:
-                try:
+                with contextlib.suppress(OSError):
                     os.chdir(self.cwd)
-                except OSError:
-                    pass  # Fall back to current directory
 
             # Set up environment for colors and proper shell detection
             env = os.environ.copy()
@@ -89,9 +88,7 @@ class Terminal:
             self._running = True
 
             # Start reader thread
-            self._reader_thread = threading.Thread(
-                target=self._read_loop, daemon=True
-            )
+            self._reader_thread = threading.Thread(target=self._read_loop, daemon=True)
             self._reader_thread.start()
 
     def _read_loop(self) -> None:
@@ -152,10 +149,8 @@ class Terminal:
         self._running = False
 
         if self.master_fd is not None:
-            try:
+            with contextlib.suppress(OSError):
                 os.close(self.master_fd)
-            except OSError:
-                pass
             self.master_fd = None
 
         if self.pid is not None:
