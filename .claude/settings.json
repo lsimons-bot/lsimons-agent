@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mise run py:install)",
+      "Bash(mise run py:lint)",
+      "Bash(mise run py:format)",
+      "Bash(mise run py:typecheck)",
+      "Bash(mise run py:test)",
+      "Bash(mise run install)",
+      "Bash(mise run lint)",
+      "Bash(mise run format)",
+      "Bash(mise run typecheck)",
+      "Bash(mise run test)",
+      "Bash(mise run ci)",
+      "Bash(mise run py:install *)",
+      "Bash(mise run py:lint *)",
+      "Bash(mise run py:format *)",
+      "Bash(mise run py:typecheck *)",
+      "Bash(mise run py:test *)",
+      "Bash(mise run install *)",
+      "Bash(mise run lint *)",
+      "Bash(mise run format *)",
+      "Bash(mise run typecheck *)",
+      "Bash(mise run test *)",
+      "Bash(mise run ci *)",
+      "Bash(pnpm run build)",
+      "Bash(pnpm run test:web)",
+      "Bash(pnpm run test:headed)",
+      "Bash(pnpm run test:electron)",
+      "Bash(uv run lsimons-agent)",
+      "Bash(uv run lsimons-agent-web)",
+      "Bash(uv run mock-llm-server)"
+    ]
+  }
+}
