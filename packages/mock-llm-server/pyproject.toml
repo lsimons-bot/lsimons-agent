@@ -3,7 +3,7 @@ name = "mock-llm-server"
 version = "0.1.0"
 description = "Mock LLM server for testing"
 requires-python = ">=3.14"
-dependencies = ["fastapi", "uvicorn"]
+dependencies = ["fastapi>=0.136.1", "uvicorn>=0.46.0"]
 
 [project.scripts]
 mock-llm-server = "mock_llm.server:main"

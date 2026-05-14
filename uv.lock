@@ -177,7 +177,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "httpx" },
+    { name = "httpx", specifier = ">=0.28.1" },
     { name = "lsimons-llm", git = "https://github.com/lsimons-bot/lsimons-llm.git" },
 ]
 
@@ -194,10 +194,10 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "fastapi" },
+    { name = "fastapi", specifier = ">=0.136.1" },
     { name = "lsimons-agent", editable = "packages/lsimons-agent" },
-    { name = "uvicorn" },
-    { name = "websockets" },
+    { name = "uvicorn", specifier = ">=0.46.0" },
+    { name = "websockets", specifier = ">=16.0" },
 ]
 
 [[package]]
@@ -218,11 +218,11 @@ dev = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "basedpyright", specifier = ">=1.22.0" },
-    { name = "pillow" },
-    { name = "pyinstaller" },
-    { name = "pytest" },
-    { name = "ruff" },
+    { name = "basedpyright", specifier = ">=1.39.3" },
+    { name = "pillow", specifier = ">=12.2.0" },
+    { name = "pyinstaller", specifier = ">=6.20.0" },
+    { name = "pytest", specifier = ">=9.0.3" },
+    { name = "ruff", specifier = ">=0.15.12" },
 ]
 
 [[package]]
@@ -256,8 +256,8 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "fastapi" },
-    { name = "uvicorn" },
+    { name = "fastapi", specifier = ">=0.136.1" },
+    { name = "uvicorn", specifier = ">=0.46.0" },
 ]
 
 [[package]]
