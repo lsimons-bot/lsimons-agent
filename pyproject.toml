@@ -5,7 +5,7 @@ description = "Custom CLI coding agent workspace"
 requires-python = ">=3.14"
 
 [dependency-groups]
-dev = ["ruff", "pytest", "pyinstaller", "pillow", "basedpyright>=1.22.0"]
+dev = ["ruff>=0.15.12", "pytest>=9.0.3", "pyinstaller>=6.20.0", "pillow>=12.2.0", "basedpyright>=1.39.3"]
 
 [tool.uv.workspace]
 members = ["packages/lsimons-agent", "packages/mock-llm-server", "packages/lsimons-agent-web"]

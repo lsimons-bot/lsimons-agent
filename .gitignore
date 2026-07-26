@@ -12,7 +12,6 @@ venv/
 
 # uv
 .python-version
-uv.lock
 
 # IDE
 .idea/
@@ -42,6 +41,9 @@ packages/lsimons-agent-electron/build/
 packages/lsimons-agent-web/dist/
 packages/lsimons-agent-web/build/
 *.spec.bak
+
+# Claude Code
+.claude/settings.local.json
 
 # E2E Tests
 packages/lsimons-agent-e2e-tests/node_modules/
